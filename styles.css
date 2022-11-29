@@ -1,0 +1,329 @@
+:root {
+  box-sizing: border-box;
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+
+html {
+  background-color: #171a21;
+  position: relative;
+  min-height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* HEADER */
+
+.header {
+  width: 100%;
+  height: 104px;
+  background-color: #171a21;
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  height: 104px;
+}
+
+.logo {
+  width: 176px;
+  height: 44px;
+  margin-top: 26px;
+}
+
+.menu-container {
+  width: 100%;
+  height: 68px;
+  margin-top: 40px;
+}
+
+.menu-item {
+  font-size: 14px;
+  font-family: "Motiva-Sans", sans-serif;
+  padding: 45px 7px 7px;
+  color: #b8b6b4;
+}
+
+.action-container {
+  display: flex;
+  height: 25px;
+  font-size: 11px;
+  padding-top: 10px;
+  margin-right: 20px;
+  font-family: Motiva-Sans, sans-serif;
+}
+
+.login-steam-btn,
+.language {
+  margin-left: 3px;
+  white-space: nowrap;
+  color: #b8b6b4;
+}
+
+.install-steam-btn {
+  background-image: url("https://community.cloudflare.steamstatic.com/public/shared/images/header/btn_header_installsteam_download.png?v=1");
+  background-repeat: no-repeat;
+  text-decoration: none;
+  background-color: #5c7e10;
+  color: #e5e4dc;
+  margin-right: 4px;
+  padding-left: 18px;
+  padding-top: 1px;
+  white-space: nowrap;
+}
+
+/* MAIN */
+
+.store-nav-area {
+  display: flex;
+  background-color: rgb(42, 62, 89);
+  margin: auto;
+  width: 100%;
+  max-width: 1200px;
+  height: 35px;
+  margin-top: 15px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #2d2f36;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-category,
+.dropdown-content a {
+  text-decoration: none;
+  color: white;
+  padding: 9px;
+}
+
+.dropdown:hover .dropdown-content {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.store-nav-area .tab,
+.drop_btn {
+  padding: 11px;
+  color: #e5e5e5;
+}
+
+.store-nav-area .spacer {
+  width: 100%;
+  max-width: 800px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.store-nav-area .store-search {
+  display: flex;
+  height: 25px;
+  width: 100%;
+  max-width: 210px;
+  background-color: #316282;
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+.store-nav-area .search-icon {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.store-nav-area .search-box {
+  width: 100%;
+  max-width: 185px;
+  min-width: 100px;
+  height: 25px;
+  border: none;
+  background-color: #316282;
+}
+
+.search-box::placeholder {
+  padding: 5px;
+  color: #0e1c25;
+  font-size: 14px;
+  margin-top: 1px;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.1);
+  font-family: "Motiva Sans", Sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+/* GAME AREA */
+
+.notification {
+  color: #e5e5e5;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: Motiva-Sans, sans-serif;
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 30px;
+}
+
+.game-display-area {
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  width: auto;
+}
+
+.game-wrapper {
+  position: relative;
+  flex: 50%;
+  max-width: 50%;
+  padding: 0px 10px 20px 0px;
+}
+
+.game-info {
+  position: absolute;
+  width: 25%;
+  height: 25px;
+  bottom: 25px;
+  right: 10px;
+
+  background-color: #00000099;
+  color: white;
+  text-align: center;
+  padding-top: 2px;
+}
+
+.game-header-image {
+  width: 100%;
+  transition: 0.5s ease;
+}
+
+.game-header-image:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+/*  FOOTER */
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer hr {
+  background-color: #8f98a0;
+  border: none;
+  height: 1px;
+}
+.footer-content {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.footer .logo-valve-footer {
+  width: 88px;
+  height: 25px;
+}
+
+.footer .logo-steam-footer {
+  width: 92px;
+  height: 26px;
+}
+
+.footer-info-text,
+.footer-info-item {
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #8f98a0;
+  margin-left: 80px;
+  margin-right: 80px;
+}
+
+/* RESIZING */
+
+@media only screen and (max-width: 700px) {
+  /* HEADER */
+  .header .logo {
+    width: 100px;
+    height: 25px;
+    margin-top: 38px;
+  }
+  .menu-item {
+    font-size: 9px;
+  }
+
+  /* MAIN */
+
+  .store-nav-area {
+    font-size: 10px;
+  }
+
+  .game-wrapper {
+    flex: 100%;
+    max-width: 100%;
+    padding: 0px 10px 20px 0px;
+  }
+
+  /* FOOTER */
+  .footer-info-text,
+  .footer-info-item {
+    font-size: 9px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+@media only screen and (max-width: 520px) {
+  /* HEADER */
+  .header .logo {
+    width: 100px;
+    height: 25px;
+    margin-top: 38px;
+  }
+  .menu-item {
+    font-size: 9px;
+  }
+
+  .menu-container {
+    visibility: hidden;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* MAIN */
+  .search-box::placeholder {
+    font-size: 11px;
+  }
+
+  .game-wrapper {
+    flex: 100%;
+    max-width: 100%;
+    padding: 0px 10px 20px 20px;
+  }
+  /* FOOTER */
+  .footer-info-text,
+  .footer-info-item {
+    font-size: 7px;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
