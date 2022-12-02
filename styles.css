@@ -181,6 +181,7 @@ a {
   margin-bottom: 30px;
 }
 
+/*MULTIPLE GAMES */
 .game-display-area {
   display: flex;
   flex-wrap: wrap;
@@ -219,6 +220,51 @@ a {
   transform: scale(1.05);
   cursor: pointer;
 }
+
+/* SINGLE GAME */
+.game-display-area .info-display {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  font-size: 12px;
+}
+
+.game-display-area .game-details {
+  margin-top: 20px;
+}
+
+.game-display-area .game-description {
+  color: #c6d4df;
+}
+
+.game-display-area .game-information {
+  color: #66c0f4;
+}
+
+.game-display-area .tags-description {
+  color: #c6d4df;
+}
+
+.game-display-area .tags-container {
+  display: flex;
+  flex-direction: column;
+  color: #67c1f5;
+}
+
+.game-display-area .tags {
+  display: inline-flex;
+  width: 27px;
+}
+
+.game-display-area .tag {
+  white-space: nowrap;
+  padding: 4px;
+  margin: 7px 7px 7px 0px;
+  background-color: #67c1f533;
+}
+
 /*  FOOTER */
 
 .footer {
@@ -283,6 +329,10 @@ a {
     padding: 0px 10px 20px 0px;
   }
 
+  .game-display-area {
+    font-size: 10px;
+  }
+
   /* FOOTER */
   .footer-info-text,
   .footer-info-item {
@@ -319,6 +369,11 @@ a {
     max-width: 100%;
     padding: 0px 10px 20px 20px;
   }
+
+  .game-display-area {
+    font-size: 8px;
+  }
+
   /* FOOTER */
   .footer-info-text,
   .footer-info-item {

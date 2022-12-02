@@ -1,4 +1,4 @@
-import "./styles";
+import "./styles.css";
 
 const BASE_URL = "https://cs-steam-game-api.herokuapp.com";
 
@@ -9,7 +9,18 @@ const getFeaturedGames = async () => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.log(error);
+    console.log("Get Featured Games error");
+  }
+};
+
+const getSingleGame = async (appid) => {
+  try {
+    const url = `${BASE_URL}/single-game/${appid}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log("Get Single Game error");
   }
 };
 
@@ -19,7 +30,9 @@ const searchGamesByKeyWords = async (keyword) => {
     const res = await fetch(url);
     const data = await res.json();
     return data;
-  } catch (error) {}
+  } catch (error) {
+    console.log("Search Games By Key Words error");
+  }
 };
 
 const searchGamesByCategory = async (category) => {
@@ -28,7 +41,9 @@ const searchGamesByCategory = async (category) => {
     const res = await fetch(url);
     const data = await res.json();
     return data;
-  } catch (error) {}
+  } catch (error) {
+    console.log("Search Games By Category error");
+  }
 };
 
 // RENDERING
@@ -36,23 +51,71 @@ const searchGamesByCategory = async (category) => {
 const renderGames = async (listDisplayedGames) => {
   const displayedGames = document.getElementById("game-display");
   displayedGames.innerHTML = ``;
-  for (let i = 0; i < listDisplayedGames.length; i++) {
-    const gamePrice =
-      listDisplayedGames[i].price === 0
-        ? "Free"
-        : `$${listDisplayedGames[i].price}`;
+  listDisplayedGames.forEach((game) => {
+    const gamePrice = game.price === 0 ? "Free" : `$${game.price}`;
     const newGame = document.createElement("div");
     newGame.classList.add("game-wrapper");
-    newGame.innerHTML = `<img
-        src="${listDisplayedGames[i].header_image}", 
-        class="game-header-image",
-        title = "${listDisplayedGames[i].appid}",
-      />
-      <div class="game-info">Price: ${gamePrice}</div>`;
+    newGame.innerHTML = `
+    <img
+            src="${game.header_image}", 
+            class="game-header-image",
+            title = "${game.name}",
+          />
+          <div class="game-info">Price: ${gamePrice}</div>`;
     newGame.addEventListener("click", (Event) => {
-      console.log(listDisplayedGames[i].appid);
+      renderSingleGame(game.appid);
     });
     displayedGames.appendChild(newGame);
+  });
+};
+
+const renderSingleGame = async (appid) => {
+  try {
+    const singleGame = await getSingleGame(appid);
+    const game = singleGame.data;
+    const displayedGames = document.getElementById("game-display");
+    // DEALING WITH GAME INFORMATION
+    const rating =
+      parseFloat(game.positive_ratings) / parseFloat(game.negative_ratings) >=
+      1.1
+        ? "Generally Positive"
+        : parseFloat(game.negative_ratings) /
+            parseFloat(game.positive_ratings) >=
+          1.1
+        ? "Generally Negative"
+        : "Neutral";
+
+    const game_tags = game.steamspy_tags;
+    //-----------------------------
+    displayedGames.innerHTML = ``;
+    displayedGames.innerHTML = `
+    <div class="info-display">
+    <img class = "header-image" src= ${game.header_image} alt="">
+    <div class="game-details">
+      <div class="game-description">
+        ${game.description}
+      </div>
+      <div class="game-information">
+        <p class="">RECENT REVIEWS: ${rating}</p>
+        <p class="">RELEASE DATE: ${game.release_date.substr(0, 10)} </p>
+        <p class="">DEVELOPER: ${game.developer}</p>
+        <p class="">PUBLISHER: Valve</p>
+      </div>
+      <div class="tags-container">
+        <div class="tags-description">Popular user-defined tags for this product: </div>
+        <div class="tags"></div>
+      </div>
+    </div>`;
+    const tags = document.querySelector(".tags");
+    game_tags.forEach((tag) => {
+      const newDiv = document.createElement("div");
+      newDiv.className = "tag";
+      tag = tag[0].toUpperCase() + tag.slice(1).toLowerCase();
+      newDiv.textContent = tag;
+      tags.append(newDiv);
+    });
+  } catch (error) {
+    console.log("Render Single Game error");
   }
 };
 
@@ -61,7 +124,9 @@ const renderFeaturedGames = async () => {
     const featuredGames = await getFeaturedGames();
     const listDisplayedGames = featuredGames.data;
     renderGames(listDisplayedGames);
-  } catch (error) {}
+  } catch (error) {
+    console.log("Render Featured Game error");
+  }
 };
 
 const renderSearchedGames = async (keyword) => {
@@ -72,7 +137,7 @@ const renderSearchedGames = async (keyword) => {
     notification.innerText = `Results for "${keyword}"`;
     renderGames(listDisplayedGames);
   } catch (error) {
-    console.log("error_search_games");
+    console.log("Render Searched Games error");
   }
 };
 
@@ -84,7 +149,7 @@ const renderGamesByCategory = async (category) => {
     notification.innerText = `Category: "${category}"`;
     renderGames(listDisplayedGames);
   } catch (error) {
-    console.log("error_search_games");
+    console.log("Render Games By Category error");
   }
 };
 
