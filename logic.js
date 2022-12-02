@@ -1,5 +1,3 @@
-import "./styles.css";
-
 const BASE_URL = "https://cs-steam-game-api.herokuapp.com";
 
 const getFeaturedGames = async () => {
