@@ -1,5 +1,3 @@
-import "./styles.css";
-
 const BASE_URL = "https://cs-steam-game-api.herokuapp.com";
 
 const getFeaturedGames = async () => {
@@ -23,6 +21,7 @@ const getSingleGame = async (appid) => {
     console.log("Get Single Game error");
   }
 };
+
 
 const searchGamesByKeyWords = async (keyword) => {
   try {
@@ -157,6 +156,7 @@ const renderGamesByCategory = async (category) => {
 
 const searchQuery = document.getElementById("search-box");
 const searchIcon = document.getElementById("search-icon");
+
 searchIcon.addEventListener("click", (Event) => {
   renderSearchedGames(searchQuery.value);
 });
