@@ -1,4 +1,4 @@
-const BASE_URL = "https://cs-steam-game-api.herokuapp.com";
+const BASE_URL = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/";
 
 const getFeaturedGames = async () => {
   try {
