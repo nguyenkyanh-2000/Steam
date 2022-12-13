@@ -108,10 +108,10 @@ a {
   z-index: 1;
 }
 
-.dropdown-category,
+.dropdown-category, .dropdown-more,
 .dropdown-content a {
   text-decoration: none;
-  color: white;
+  color: #e5e5e5;
   padding: 9px;
 }
 
@@ -187,7 +187,7 @@ a {
   flex-wrap: wrap;
   margin: auto;
   margin-top: 50px;
-  margin-bottom: 100px;
+  margin-bottom: 20px;
   width: auto;
 }
 
@@ -235,16 +235,12 @@ a {
   margin-top: 20px;
 }
 
-.game-display-area .game-description {
+.game-display-area .game-description, .tags-description {
   color: #c6d4df;
 }
 
 .game-display-area .game-information {
   color: #66c0f4;
-}
-
-.game-display-area .tags-description {
-  color: #c6d4df;
 }
 
 .game-display-area .tags-container {
@@ -265,6 +261,39 @@ a {
   background-color: #67c1f533;
 }
 
+.pagination ul{
+
+  visibility: hidden;
+
+  width: 40%;
+  margin: auto;
+  padding: 0px;
+
+  margin-top: 20px;
+  margin-bottom: 100px;
+  display: flex;
+  justify-content: space-around;
+
+  color: #e5e5e5;
+  font-weight: 700;
+}
+
+.pagination li{
+  list-style: none;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination li.dots{
+  cursor: default;
+}
+
+.pagination ul li.active, 
+.pagination ul li.number:hover,
+.pagination ul li.btn:hover{
+  background-color: #66c0f4;
+}
 /*  FOOTER */
 
 .footer {
@@ -340,6 +369,7 @@ a {
     margin-left: 10px;
     margin-right: 10px;
   }
+
 }
 
 @media only screen and (max-width: 520px) {

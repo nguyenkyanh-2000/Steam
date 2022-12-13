@@ -1,5 +1,6 @@
 const BASE_URL = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/";
 
+
 const getFeaturedGames = async () => {
   try {
     const url = `${BASE_URL}/features`;
@@ -23,9 +24,9 @@ const getSingleGame = async (appid) => {
 };
 
 
-const searchGamesByKeyWords = async (keyword) => {
+const searchGamesByKeyWords = async (keyword, page) => {
   try {
-    const url = `${BASE_URL}/games?q=${keyword}&page=0&limit=10`;
+    const url = `${BASE_URL}/games?q=${keyword}&page=${page}&limit=10`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
@@ -34,9 +35,9 @@ const searchGamesByKeyWords = async (keyword) => {
   }
 };
 
-const searchGamesByCategory = async (category) => {
+const searchGamesByCategory = async (category, page) => {
   try {
-    const url = `${BASE_URL}/games?genres=${category}&page=0&limit=10`;
+    const url = `${BASE_URL}/games?genres=${category}&page=${page}&limit=10`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
@@ -44,6 +45,17 @@ const searchGamesByCategory = async (category) => {
     console.log("Search Games By Category error");
   }
 };
+
+const getCategories = async (page) => {
+  try {
+    const url = `${BASE_URL}/genres?page=${page}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log("Get Categories error")
+  }
+}
 
 // RENDERING
 
@@ -73,6 +85,13 @@ const renderSingleGame = async (appid) => {
     const singleGame = await getSingleGame(appid);
     const game = singleGame.data;
     const displayedGames = document.getElementById("game-display");
+
+    const notification = document.getElementById("notification");
+    notification.innerText = `${game.name}`;
+
+    const ulPages = document.querySelector("ul");
+    ulPages.innerHTML = ``;
+
     // DEALING WITH GAME INFORMATION
     const rating =
       parseFloat(game.positive_ratings) / parseFloat(game.negative_ratings) >=
@@ -86,6 +105,7 @@ const renderSingleGame = async (appid) => {
 
     const game_tags = game.steamspy_tags;
     //-----------------------------
+    
     displayedGames.innerHTML = ``;
     displayedGames.innerHTML = `
     <div class="info-display">
@@ -128,29 +148,69 @@ const renderFeaturedGames = async () => {
   }
 };
 
-const renderSearchedGames = async (keyword) => {
+const renderSearchedGames = async (keyword, page) => {
   try {
-    const searchedGames = await searchGamesByKeyWords(keyword);
+    const searchedGames = await searchGamesByKeyWords(keyword, page);
     const listDisplayedGames = searchedGames.data;
+    const totalPages = (searchedGames.total / 10);
+
     const notification = document.getElementById("notification");
     notification.innerText = `Results for "${keyword}"`;
+
+    renderPagination(page, totalPages);
     renderGames(listDisplayedGames);
+
   } catch (error) {
     console.log("Render Searched Games error");
   }
 };
 
-const renderGamesByCategory = async (category) => {
+const renderGamesByCategory = async (category, page) => {
   try {
-    const searchedGames = await searchGamesByCategory(category);
+    const searchedGames = await searchGamesByCategory(category, page);
     const listDisplayedGames = searchedGames.data;
+    const totalPages = (searchedGames.total / 10);
+
     const notification = document.getElementById("notification");
     notification.innerText = `Category: "${category}"`;
+
+    renderPagination(page, totalPages);
     renderGames(listDisplayedGames);
   } catch (error) {
     console.log("Render Games By Category error");
   }
 };
+
+const renderListOfCategory = async (page) => {
+  try {
+    const searchedCategories = await getCategories(page);
+    const listCategories = searchedCategories.data;
+    const notification = document.getElementById("notification");
+    notification.innerText = `Categories`;
+  } catch (error) {
+    console.log("Render List of Categories error")
+  }
+}
+
+const renderPagination = (currentPage, totalPages) => {
+
+  const ulPages = document.querySelector("ul");
+  const prevPage = currentPage - 1;
+  const nextPage = currentPage + 1;
+  ulPages.style.visibility = "visible";
+  ulContent = '';
+
+  ulContent+= (currentPage > 1) ? `<li class="btn back" onClick = "renderPagination(${currentPage-1}, ${totalPages})"><span>Back</span></li>` : '';
+  for (let i = prevPage; i <= nextPage+1; i++){
+    if (i === 0) i = 1;
+    if (i > totalPages) continue;
+    isActive = (i === currentPage) ? 'active' : ''; 
+    ulContent += `<li class="number ${isActive}"  onClick = "renderPagination(${i},${totalPages})">${i}</li>`;
+  }
+  ulContent+= (currentPage < totalPages) ? `<li class="btn next" onClick = "renderPagination(${currentPage+1}, ${totalPages})"><span>Next</span></li>` : '';
+
+  ulPages.innerHTML = ulContent;
+}
 
 /* ASSIGNING BUTTONS */
 
@@ -158,13 +218,13 @@ const searchQuery = document.getElementById("search-box");
 const searchIcon = document.getElementById("search-icon");
 
 searchIcon.addEventListener("click", (Event) => {
-  renderSearchedGames(searchQuery.value);
+  renderSearchedGames(searchQuery.value,1);
 });
 
 const categoryList = document.querySelectorAll(".dropdown-category");
 categoryList.forEach((Element) => {
   Element.addEventListener("click", (event) => {
-    renderGamesByCategory(Element.textContent.toLowerCase());
+    renderGamesByCategory(Element.textContent.toLowerCase(), 1);
   });
 });
 
