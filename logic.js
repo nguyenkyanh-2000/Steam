@@ -1,5 +1,6 @@
 const BASE_URL = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/";
 
+/* ALL RESULTS ARE LIMITED TO 10 PER REQUEST*/
 
 const getFeaturedGames = async () => {
   try {
@@ -24,7 +25,7 @@ const getSingleGame = async (appid) => {
 };
 
 
-const searchGamesByKeyWords = async (keyword, page) => {
+const searchGamesByKeyWords = async (page = 1, keyword) => {
   try {
     const url = `${BASE_URL}/games?q=${keyword}&page=${page}&limit=10`;
     const res = await fetch(url);
@@ -35,7 +36,7 @@ const searchGamesByKeyWords = async (keyword, page) => {
   }
 };
 
-const searchGamesByCategory = async (category, page) => {
+const searchGamesByCategory = async (page = 1, category) => {
   try {
     const url = `${BASE_URL}/games?genres=${category}&page=${page}&limit=10`;
     const res = await fetch(url);
@@ -148,34 +149,45 @@ const renderFeaturedGames = async () => {
   }
 };
 
-const renderSearchedGames = async (keyword, page) => {
+const renderSearchedGames = async (page, keyword) => {
   try {
-    const searchedGames = await searchGamesByKeyWords(keyword, page);
+    const searchedGames = await searchGamesByKeyWords(page, keyword);
     const listDisplayedGames = searchedGames.data;
-    const totalPages = (searchedGames.total / 10);
+    const totalPages = Math.ceil(searchGamesByKeyWords.total/10);
 
     const notification = document.getElementById("notification");
     notification.innerText = `Results for "${keyword}"`;
 
-    renderPagination(page, totalPages);
     renderGames(listDisplayedGames);
+
+    const newPagination = document.createElement('ul');
+    const displayedGames = document.getElementById("game-display");
+    newPagination.className = "pagination";
+    displayedGames.appendChild(newPagination);
+    pagination(page, totalPages, newPagination.className, renderSearchedGames, keyword);
 
   } catch (error) {
     console.log("Render Searched Games error");
   }
 };
 
-const renderGamesByCategory = async (category, page) => {
+const renderGamesByCategory = async (page = 1, category) => {
   try {
-    const searchedGames = await searchGamesByCategory(category, page);
+    const searchedGames = await searchGamesByCategory(page, category);
     const listDisplayedGames = searchedGames.data;
-    const totalPages = (searchedGames.total / 10);
+    const totalPages = Math.ceil(searchGamesByCategory.total/10);
 
     const notification = document.getElementById("notification");
     notification.innerText = `Category: "${category}"`;
 
-    renderPagination(page, totalPages);
     renderGames(listDisplayedGames);
+
+    const newPagination = document.createElement('ul');
+    const displayedGames = document.getElementById("game-display");
+    newPagination.className = "pagination";
+    displayedGames.appendChild(newPagination);
+    pagination(page, totalPages, newPagination.className, renderGamesByCategory, category);
+  
   } catch (error) {
     console.log("Render Games By Category error");
   }
@@ -185,31 +197,81 @@ const renderListOfCategory = async (page) => {
   try {
     const searchedCategories = await getCategories(page);
     const listCategories = searchedCategories.data;
+    const totalPages = Math.ceil(searchedCategories.total/10);
+
+    const displayedGames = document.getElementById("game-display");
+    displayedGames.innerHTML =` `;
+
     const notification = document.getElementById("notification");
-    notification.innerText = `Categories`;
+    notification.innerText = `Categories`; 
+
+    listCategories.forEach(Element => {
+      const newDiv = document.createElement('div');
+      newDiv.innerHTML = `<div class="category-wrapper">
+      <div class="category">${Element.name}</div></div>`;
+      newDiv.addEventListener("click", (Event) => {
+        renderGamesByCategory(1 , Element.name)});
+      displayedGames.appendChild(newDiv);
+    });
+
+    const newPagination = document.createElement('ul');
+    newPagination.className = "pagination";
+    displayedGames.appendChild(newPagination);
+    pagination(page, totalPages, newPagination.className, renderListOfCategory);
+
   } catch (error) {
     console.log("Render List of Categories error")
   }
 }
 
-const renderPagination = (currentPage, totalPages) => {
+/* PAGINATION */
 
-  const ulPages = document.querySelector("ul");
+
+const pagination = (currentPage, totalPages, ulName, render, keyword) => {
   const prevPage = currentPage - 1;
   const nextPage = currentPage + 1;
-  ulPages.style.visibility = "visible";
-  ulContent = '';
+  const ulPages = document.querySelector(`.${ulName}`);
+  ulPages.innerHTML = ``;
 
-  ulContent+= (currentPage > 1) ? `<li class="btn back" onClick = "renderPagination(${currentPage-1}, ${totalPages})"><span>Back</span></li>` : '';
-  for (let i = prevPage; i <= nextPage+1; i++){
-    if (i === 0) i = 1;
-    if (i > totalPages) continue;
-    isActive = (i === currentPage) ? 'active' : ''; 
-    ulContent += `<li class="number ${isActive}"  onClick = "renderPagination(${i},${totalPages})">${i}</li>`;
+  /*BACK BUTTON*/
+  if (currentPage > 1){
+    const backBtn = document.createElement('li');
+    backBtn.innerHTML = `<li class="back-btn">&laquo;</li>`;
+    backBtn.addEventListener("click", (Event) => {
+      pagination(currentPage - 1, totalPages, ulName, render, keyword);
+      render(currentPage - 1, keyword);
+    });
+    ulPages.appendChild(backBtn);
   }
-  ulContent+= (currentPage < totalPages) ? `<li class="btn next" onClick = "renderPagination(${currentPage+1}, ${totalPages})"><span>Next</span></li>` : '';
-
-  ulPages.innerHTML = ulContent;
+  
+  /*NUMBERS & DOTS*/
+  
+  for (let i = prevPage; i <= nextPage; i++)
+    {
+      if (i === 0) i = 1;
+      if (i > totalPages) continue;
+      isActive = (i === currentPage) ? 'active' : '';
+      const selectedPage = document.createElement('li');
+      selectedPage.className = `number ${isActive}`
+      selectedPage.innerText = i;
+      selectedPage.addEventListener("click", (Event) => {
+        pagination(i, totalPages, ulName, render, keyword);
+        render(i, keyword);
+      });
+      ulPages.append(selectedPage);
+    }
+  
+  /*NEXT BUTTON*/
+   if (currentPage < totalPages){
+    const nextBtn = document.createElement('li');
+    nextBtn.innerHTML = `<li class="next-btn">&raquo;</li>`;
+    nextBtn.addEventListener("click", (Event) => {
+      pagination(currentPage + 1, totalPages, ulName, render, keyword);
+      render(currentPage + 1, keyword);
+    });
+    ulPages.appendChild(nextBtn);
+  }
+  
 }
 
 /* ASSIGNING BUTTONS */
@@ -218,14 +280,20 @@ const searchQuery = document.getElementById("search-box");
 const searchIcon = document.getElementById("search-icon");
 
 searchIcon.addEventListener("click", (Event) => {
-  renderSearchedGames(searchQuery.value,1);
+  renderSearchedGames(1 , searchQuery.value);
 });
 
 const categoryList = document.querySelectorAll(".dropdown-category");
 categoryList.forEach((Element) => {
   Element.addEventListener("click", (event) => {
-    renderGamesByCategory(Element.textContent.toLowerCase(), 1);
+    renderGamesByCategory(1, Element.textContent.toLowerCase());
   });
+});
+
+
+const moreCategory = document.getElementById("moreCategory");
+moreCategory.addEventListener("click", (Event) => {
+  renderListOfCategory(1);
 });
 
 renderFeaturedGames();
