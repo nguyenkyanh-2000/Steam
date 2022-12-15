@@ -25,7 +25,7 @@ const getSingleGame = async (appid) => {
 };
 
 
-const searchGamesByKeyWords = async (page = 1, keyword) => {
+const searchGamesByKeyWords = async (page, keyword) => {
   try {
     const url = `${BASE_URL}/games?q=${keyword}&page=${page}&limit=10`;
     const res = await fetch(url);
@@ -36,7 +36,7 @@ const searchGamesByKeyWords = async (page = 1, keyword) => {
   }
 };
 
-const searchGamesByCategory = async (page = 1, category) => {
+const searchGamesByCategory = async (page, category) => {
   try {
     const url = `${BASE_URL}/games?genres=${category}&page=${page}&limit=10`;
     const res = await fetch(url);
@@ -153,7 +153,7 @@ const renderSearchedGames = async (page, keyword) => {
   try {
     const searchedGames = await searchGamesByKeyWords(page, keyword);
     const listDisplayedGames = searchedGames.data;
-    const totalPages = Math.ceil(searchGamesByKeyWords.total/10);
+    const totalPages = Math.ceil(searchedGames.total/10);
 
     const notification = document.getElementById("notification");
     notification.innerText = `Results for "${keyword}"`;
@@ -171,11 +171,11 @@ const renderSearchedGames = async (page, keyword) => {
   }
 };
 
-const renderGamesByCategory = async (page = 1, category) => {
+const renderGamesByCategory = async (page, category) => {
   try {
     const searchedGames = await searchGamesByCategory(page, category);
     const listDisplayedGames = searchedGames.data;
-    const totalPages = Math.ceil(searchGamesByCategory.total/10);
+    const totalPages = Math.ceil(searchedGames.total/10);
 
     const notification = document.getElementById("notification");
     notification.innerText = `Category: "${category}"`;
@@ -210,7 +210,8 @@ const renderListOfCategory = async (page) => {
       newDiv.innerHTML = `<div class="category-wrapper">
       <div class="category">${Element.name}</div></div>`;
       newDiv.addEventListener("click", (Event) => {
-        renderGamesByCategory(1 , Element.name)});
+        renderGamesByCategory(1 , Element.name);
+      });
       displayedGames.appendChild(newDiv);
     });
 
