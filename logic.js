@@ -25,9 +25,9 @@ const getSingleGame = async (appid) => {
 };
 
 
-const searchGamesByKeyWords = async (page, keyword) => {
+const searchGamesByKeyWords = async (page, keyword, limit = 10) => {
   try {
-    const url = `${BASE_URL}/games?q=${keyword}&page=${page}&limit=10`;
+    const url = `${BASE_URL}/games?q=${keyword}&page=${page}&limit=${limit}`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
@@ -36,9 +36,9 @@ const searchGamesByKeyWords = async (page, keyword) => {
   }
 };
 
-const searchGamesByCategory = async (page, category) => {
+const searchGamesByCategory = async (page, category, limit = 10) => {
   try {
-    const url = `${BASE_URL}/games?genres=${category}&page=${page}&limit=10`;
+    const url = `${BASE_URL}/games?genres=${category}&page=${page}&limit=${limit}`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
@@ -47,9 +47,9 @@ const searchGamesByCategory = async (page, category) => {
   }
 };
 
-const getCategories = async (page) => {
+const getCategories = async (page, limit = 10) => {
   try {
-    const url = `${BASE_URL}/genres?page=${page}`;
+    const url = `${BASE_URL}/genres?page=${page}&limit=${limit}`;
     const res = await fetch(url);
     const data = await res.json();
     return data;
@@ -284,13 +284,27 @@ searchIcon.addEventListener("click", (Event) => {
   renderSearchedGames(1 , searchQuery.value);
 });
 
-const categoryList = document.querySelectorAll(".dropdown-category");
-categoryList.forEach((Element) => {
-  Element.addEventListener("click", (event) => {
-    renderGamesByCategory(1, Element.textContent.toLowerCase());
-  });
-});
 
+const renderCategoriesDropdown = async (page, limit) => {
+  try {
+    const searchedCategories = await getCategories(page, limit);
+    const gameCategories = searchedCategories.data;
+    const dropdownCategories = document.getElementById("dropdown-categories");
+    gameCategories.forEach(Element => {
+      const newDiv = document.createElement('div');
+      newDiv.innerHTML = `<div class="dropdown-category">${Element.name.charAt(0).toUpperCase() + Element.name.slice(1)}</div>`;
+      newDiv.addEventListener("click", (Event) => {
+        renderGamesByCategory(1, Element.name);
+      })
+      dropdownCategories.prepend(newDiv);
+    });
+    console.log(dropdownCategories);
+  } catch (error) {
+    console.log("error at renderCategoriesDropdown");
+  }
+}
+
+renderCategoriesDropdown(1,5);
 
 const moreCategory = document.getElementById("moreCategory");
 moreCategory.addEventListener("click", (Event) => {
