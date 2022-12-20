@@ -90,9 +90,6 @@ const renderSingleGame = async (appid) => {
     const notification = document.getElementById("notification");
     notification.innerText = `${game.name}`;
 
-    const ulPages = document.querySelector("ul");
-    ulPages.innerHTML = ``;
-
     // DEALING WITH GAME INFORMATION
     const rating =
       parseFloat(game.positive_ratings) / parseFloat(game.negative_ratings) >=
